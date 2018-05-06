@@ -6,11 +6,9 @@ import copy
 import os
 import cv2
 import numpy as np
+from sys import path
 
-CAFFE_ROOT = './'
-if osp.join(CAFFE_ROOT,'python') not in sys.path:
-        sys.path.insert(0,osp.join(CAFFE_ROOT,'python'))
-
+path.append('/data1/henryzhong/caffe/python')
 import caffe
 
 caffe.set_mode_cpu()
@@ -22,8 +20,8 @@ im.resize(60, 60, 3)
 im = im.transpose(2, 0, 1)[np.newaxis, :, :, :]
 data = result_net.blobs['data']
 data.reshape(*im.shape)
-print im
+print (im)
 data.data[...] = im
-print result_net.forward()
-print result_net.blobs['fc6_landmark'].data
+print (result_net.forward())
+print (result_net.blobs['fc6_landmark'].data)
 #print result_net.blobs
