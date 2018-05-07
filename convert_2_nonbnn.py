@@ -165,8 +165,13 @@ class ConvertBnn:
                 channels = self.net_model.params[param_layers[i].name][0].num
                 # bn layer weights
                 eps = 1e-5
-                mean = self.net_model.params[param_layers[i+1].name][0].data
-                std = np.sqrt(self.net_model.params[param_layers[i+1].name][1].data + eps)
+                moving_average = self.net_model.params[param_layers[i + 1].name][2].data[0]
+                if moving_average != 0:
+                    scale_factor = 1 / moving_average
+                else:
+                    scale_factor = 0
+                mean = scale_factor * self.net_model.params[param_layers[i+1].name][0].data
+                std = np.sqrt(scale_factor * self.net_model.params[param_layers[i+1].name][1].data + eps)
                 # scale layer weights
                 scale_weight = self.net_model.params[param_layers[i+2].name][0].data
                 scale_bias = self.net_model.params[param_layers[i+2].name][1].data
