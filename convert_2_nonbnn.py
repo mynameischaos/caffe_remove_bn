@@ -8,7 +8,9 @@ from sys import path
 import numpy as np
 import google.protobuf as pb
  
-path.append('/data1/henryzhong/caffe/python')
+#path.append('/data1/henryzhong/caffe/python')
+path.append('/data2/nfs_share/caffe/python')
+print (path)
 import argparse
  
 import caffe
@@ -78,7 +80,7 @@ class ConvertBnn:
                             params.add()
                             params[1].lr_mult = 2
                             params[1].decay_mult = 0
-                            if layer_params[i].type == 'Convolution':
+                            if layer_params[i].type in ['Convolution', 'DepthwiseConvolution']:
                                 layer_params[i].convolution_param.bias_term = True
                                 layer_params[i].convolution_param.bias_filler.type = 'constant'
                                 layer_params[i].convolution_param.bias_filler.value = 0
@@ -164,7 +166,7 @@ class ConvertBnn:
                  
                 channels = self.net_model.params[param_layers[i].name][0].num
                 # bn layer weights
-                eps = 1e-5
+                eps = 1e-8
                 moving_average = self.net_model.params[param_layers[i + 1].name][2].data[0]
                 if moving_average != 0:
                     scale_factor = 1 / moving_average
